@@ -6,7 +6,7 @@ EOF
 cat > alpine-minirootfs/mk.sh << EOF
 apk update
 apk upgrade
-apk add openrc nano mc htop tcpdump parted wpa_supplicant dropbear dropbear-ssh efibootmgr busybox-initscripts
+apk add openrc nano mc htop tcpdump parted wpa_supplicant dropbear dropbear-ssh efibootmgr busybox-initscripts nmap rtl8821ce-lts
 echo "exit from here typing exit"
 exit
 EOF
