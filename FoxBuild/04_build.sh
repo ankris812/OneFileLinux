@@ -2,18 +2,7 @@
 
 set -e
 
-# RootFS variables
-ROOTFS="alpine-minirootfs"
-CACHEPATH="$ROOTFS/var/cache/apk/"
-SHELLHISTORY="$ROOTFS/root/.ash_history"
-DEVCONSOLE="$ROOTFS/dev/console"
-MODULESPATH="$ROOTFS/lib/modules/"
-DEVURANDOM="$ROOTFS/dev/urandom"
-
-# Kernel variables
-KERNELVERSION="5.6.8"
-KERNELPATH="linux-5.6.8"
-export INSTALL_MOD_PATH="../$ROOTFS/"
+export INSTALL_MOD_PATH="../alpine-minirootfs/"
 
 # Build threads equall CPU cores
 THREADS=$(getconf _NPROCESSORS_ONLN)
@@ -40,51 +29,51 @@ echo "----------------------------------------------------"
 echo -e "Checking root filesystem\n"
 
 # Clearing apk cache 
-if [ "$(ls -A $CACHEPATH)" ]; then 
-    echo -e "Apk cache folder is not empty: $CACHEPATH \nRemoving cache...\n"
-    rm $CACHEPATH*
+if [ "$(ls -A alpine-minirootfs/var/cache/apk/)" ]; then 
+    echo -e "Apk cache folder is not empty: alpine-minirootfs/var/cache/apk/ \nRemoving cache...\n"
+    rm alpine-minirootfs/var/cache/apk/*
 fi
 
 # Remove shell history
-if [ -f $SHELLHISTORY ]; then
-    echo -e "Shell history found: $SHELLHISTORY \nRemoving history file...\n"
-    rm $SHELLHISTORY
+if [ -f alpine-minirootfs/root/.ash_history ]; then
+    echo -e "Shell history found: alpine-minirootfs/root/.ash_history \nRemoving history file...\n"
+    rm alpine-minirootfs/root/.ash_history
 fi
 
 # Clearing kernel modules folder 
-if [ "$(ls -A $MODULESPATH)" ]; then 
-    echo -e "Kernel modules folder is not empty: $MODULESPATH \nRemoving modules...\n"
-    rm -r $MODULESPATH*
+if [ "$(ls -A alpine-minirootfs/lib/modules/)" ]; then 
+    echo -e "Kernel modules folder is not empty: alpine-minirootfs/lib/modules/ \nRemoving modules...\n"
+    rm -r alpine-minirootfs/lib/modules/*
 fi
 
 # Removing dev bindings
-if [ -e $DEVURANDOM ]; then
-    echo -e "/dev/ bindings found: $DEVURANDOM. Unmounting...\n"
-    umount $DEVURANDOM || echo -e "Not mounted. \n"
-    rm $DEVURANDOM
+if [ -e alpine-minirootfs/dev/urandom ]; then
+    echo -e "/dev/ bindings found: alpine-minirootfs/dev/urandom . Unmounting...\n"
+    umount alpine-minirootfs/dev/urandom || echo -e "Not mounted. \n"
+    rm alpine-minirootfs/dev/urandom
 fi
 
 
 ## Check if console character file exist
-#if [ ! -e $DEVCONSOLE ]; then
-#    echo -e "ERROR: Console device does not exist: $DEVCONSOLE \nPlease create device file:  mknod -m 600 $DEVCONSOLE c 5 1"
+#if [ ! -e alpine-minirootfs/dev/console ]; then
+#    echo -e "ERROR: Console device does not exist: alpine-minirootfs/dev/console \nPlease create device file:  mknod -m 600 alpine-minirootfs/dev/console c 5 1"
 #    exit 1
 #else
-#    if [ -d $DEVCONSOLE ]; then # Check that console device is not a folder 
-#        echo -e  "ERROR: Console device is a folder: $DEVCONSOLE \nPlease create device file:  mknod -m 600 $DEVCONSOLE c 5 1"
+#    if [ -d alpine-minirootfs/dev/console ]; then # Check that console device is not a folder 
+#        echo -e  "ERROR: Console device is a folder: alpine-minirootfs/dev/console \nPlease create device file:  mknod -m 600 alpine-minirootfs/dev/console c 5 1"
 #        exit 1
 #    fi
 #
-#    if [ -f $DEVCONSOLE ]; then # Check that console device is not a regular file
-#        echo -e "ERROR: Console device is a regular: $DEVCONSOLE \nPlease create device file:  mknod -m 600 $DEVCONSOLE c 5 1"
+#    if [ -f alpine-minirootfs/dev/console ]; then # Check that console device is not a regular file
+#        echo -e "ERROR: Console device is a regular: alpine-minirootfs/dev/console \nPlease create device file:  mknod -m 600 alpine-minirootfs/dev/console c 5 1"
 #    fi
 #fi
 
 # Print rootfs uncompressed size
-echo -e "Uncompressed root filesystem size WITHOUT kernel modules: $(du -sh $ROOTFS | cut -f1)\n"
+echo -e "Uncompressed root filesystem size WITHOUT kernel modules: $(du -sh alpine-minirootfs | cut -f1)\n"
 
 
-cd $KERNELPATH 
+cd linux-5.15.40
 
 ##########################
 # Bulding kernel
@@ -105,12 +94,12 @@ make modules -j$THREADS
 echo "----------------------------------------------------"
 echo -e "Copying kernel modules in root filesystem\n"
 make modules_install
-echo -e "Uncompressed root filesystem size WITH kernel modules: $(du -sh ../$ROOTFS | cut -f1)\n"
+echo -e "Uncompressed root filesystem size WITH kernel modules: $(du -sh ../alpine-minirootfs | cut -f1)\n"
 
 # Creating modules.dep
 echo "----------------------------------------------------"
 echo -e "Copying modules.dep\n"
-depmod -b ../$ROOTFS -F System.map $KERNELVERSION-onefile
+depmod -b ../alpine-minirootfs -F System.map  5.15.40-onefile
 
 ##########################
 # Bulding kernel
