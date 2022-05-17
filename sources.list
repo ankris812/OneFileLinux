@@ -14,12 +14,12 @@ deb-src http://archive.ubuntu.com/ubuntu natty-updates main restricted
 ## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
 ## team. Also, please note that software in universe WILL NOT receive any
 ## review or updates from the Ubuntu security team.
-# deb http://archive.ubuntu.com/ubuntu natty universe
-# deb-src http://archive.ubuntu.com/ubuntu natty universe
-# deb http://archive.ubuntu.com/ubuntu natty-updates universe
-# deb-src http://archive.ubuntu.com/ubuntu natty-updates universe
-# deb http://security.ubuntu.com/ubuntu natty-security universe
-# deb-src http://security.ubuntu.com/ubuntu natty-security universe
+deb http://archive.ubuntu.com/ubuntu natty universe
+deb-src http://archive.ubuntu.com/ubuntu natty universe
+deb http://archive.ubuntu.com/ubuntu natty-updates universe
+deb-src http://archive.ubuntu.com/ubuntu natty-updates universe
+deb http://security.ubuntu.com/ubuntu natty-security universe
+deb-src http://security.ubuntu.com/ubuntu natty-security universe
 
 ## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
 ## team, and may not be under a free licence. Please satisfy yourself as to
